@@ -26,10 +26,11 @@ function App() {
     content,
     error,
     renameActive,
+    quickOpen,
+    setQuickOpen,
   } = useStore();
   const [mode, setMode] = useState<ViewMode>("split");
   const [renaming, setRenaming] = useState<string | null>(null);
-  const [quickOpen, setQuickOpen] = useState(false);
   const [shortcuts, setShortcuts] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(260);
@@ -101,7 +102,7 @@ function App() {
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [save, newNote, chooseVault, openFile, openNote, closeTab, activePath, notes]);
+  }, [save, newNote, chooseVault, openFile, openNote, closeTab, activePath, notes, setQuickOpen]);
 
   const title = activePath?.replace(/\.md$/i, "") ?? "";
 

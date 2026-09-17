@@ -8,6 +8,7 @@ export function StatusBar() {
   const vaultPath = useStore((s) => s.vaultPath);
   const activePath = useStore((s) => s.activePath);
   const chooseVault = useStore((s) => s.chooseVault);
+  const setQuickOpen = useStore((s) => s.setQuickOpen);
 
   const words = content.trim() ? content.trim().split(/\s+/).length : 0;
   const lines = content ? content.split("\n").length : 0;
@@ -22,7 +23,9 @@ export function StatusBar() {
         {vaultPath ?? "No folder opened"}
       </button>
       {activePath && <span className="sep">›</span>}
-      <span className="file">{activePath ?? ""}</span>
+      <button className="file" onClick={() => setQuickOpen(true)} title="Go to note (Ctrl+P)">
+        {activePath ?? ""}
+      </button>
       <span className="spacer" />
       <span>
         Ln {cursor.line}, Col {cursor.column}

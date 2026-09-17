@@ -123,6 +123,15 @@ button:disabled {
 .statusbar .file {
   color: var(--fg);
   flex-shrink: 0;
+  font: inherit;
+  border: none;
+  border-radius: 4px;
+  padding: 1px 5px;
+  cursor: pointer;
+}
+
+.statusbar .file:hover {
+  background: color-mix(in srgb, var(--fg) 10%, transparent);
 }
 
 .statusbar .sep {
