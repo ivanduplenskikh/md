@@ -113,8 +113,8 @@ button:disabled {
 }
 
 .title-picker:hover {
-  background: var(--bg);
-  border-color: var(--accent);
+  background: color-mix(in srgb, var(--fg) 8%, var(--bg));
+  border-color: var(--border);
 }
 
 .title-picker .file {
