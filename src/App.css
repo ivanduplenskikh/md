@@ -204,6 +204,12 @@ button:disabled {
 
 .editor {
   border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.editor .monaco-editor,
+.editor section {
+  height: 100%;
 }
 
 .preview {
