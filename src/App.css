@@ -256,31 +256,48 @@ button.icon:hover:not(:disabled) {
 .note-list li {
   display: flex;
   align-items: center;
-  border-radius: 6px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+/* Inner buttons never paint their own background; the row conveys state. */
+.note-list li button,
+.note-list li button:hover {
+  background: transparent;
 }
 
 .note-list li.active {
-  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  box-shadow: inset 2px 0 0 var(--accent);
 }
 
 .note-item {
   flex: 1;
+  min-width: 0;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   text-align: left;
-  padding: 6px 8px;
+  font-size: 13px;
+  line-height: 1.4;
+  padding: 3px 8px;
+  color: var(--fg-dim);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.note-list li:hover .note-item,
+.note-list li.active .note-item {
+  color: var(--fg);
+}
+
 .note-list .delete {
   display: inline-flex;
   align-items: center;
-  padding: 4px 6px;
+  padding: 3px 6px;
   border: none;
   color: var(--fg-dim);
-  visibility: hidden;
+  opacity: 0;
 }
 
 .note-list .delete:hover {
@@ -289,7 +306,7 @@ button.icon:hover:not(:disabled) {
 }
 
 .note-list li:hover .delete {
-  visibility: visible;
+  opacity: 1;
 }
 
 /* Main */
