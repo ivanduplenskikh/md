@@ -1,4 +1,5 @@
 import { useStore } from "../store";
+import { FileIcon, FolderIcon, PlusIcon, TrashIcon } from "./icons";
 
 export function Sidebar() {
   const { notes, activePath, vaultPath, openNote, newNote, chooseVault, openFile, deleteNote } =
@@ -7,14 +8,30 @@ export function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
-        <button onClick={newNote} disabled={!vaultPath} title="New note (Ctrl+N)">
-          + New
+        <button
+          className="icon"
+          onClick={newNote}
+          disabled={!vaultPath}
+          title="New note (Ctrl+N)"
+          aria-label="New note"
+        >
+          <PlusIcon />
         </button>
-        <button onClick={openFile} title="Open a .md file (Ctrl+O)">
-          Open…
+        <button
+          className="icon"
+          onClick={openFile}
+          title="Open a .md file (Ctrl+O)"
+          aria-label="Open file"
+        >
+          <FileIcon />
         </button>
-        <button onClick={chooseVault} title="Choose vault folder">
-          Folder…
+        <button
+          className="icon"
+          onClick={chooseVault}
+          title="Choose vault folder"
+          aria-label="Choose vault folder"
+        >
+          <FolderIcon />
         </button>
       </div>
       <div className="vault-path" title={vaultPath ?? ""}>
@@ -29,11 +46,12 @@ export function Sidebar() {
             <button
               className="delete"
               title="Delete note"
+              aria-label={`Delete ${note.name}`}
               onClick={() => {
                 if (confirm(`Delete "${note.name}"?`)) void deleteNote(note.path);
               }}
             >
-              ×
+              <TrashIcon />
             </button>
           </li>
         ))}

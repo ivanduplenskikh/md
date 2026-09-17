@@ -77,6 +77,20 @@ button:disabled {
   padding: 10px;
 }
 
+button.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  color: var(--fg-dim);
+}
+
+button.icon:hover:not(:disabled) {
+  color: var(--fg);
+}
+
 .vault-path {
   padding: 0 10px 8px;
   font-size: 11px;
@@ -117,9 +131,17 @@ button:disabled {
 }
 
 .note-list .delete {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 6px;
   border: none;
   color: var(--fg-dim);
   visibility: hidden;
+}
+
+.note-list .delete:hover {
+  color: #f85149;
+  background: transparent;
 }
 
 .note-list li:hover .delete {
