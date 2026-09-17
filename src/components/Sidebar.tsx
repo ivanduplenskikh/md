@@ -9,7 +9,7 @@ export function Sidebar() {
         <button onClick={newNote} disabled={!vaultPath} title="New note (Ctrl+N)">
           + New
         </button>
-        <button onClick={chooseVault} title="Choose vault folder">
+        <button onClick={chooseVault} title="Choose vault folder (Ctrl+O)">
           Vault
         </button>
       </div>

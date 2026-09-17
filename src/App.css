@@ -322,3 +322,67 @@ button:disabled {
 .markdown-alert-caution {
   --alert: #f85149;
 }
+
+/* Quick open palette */
+.palette-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 12vh;
+  background: rgb(0 0 0 / 40%);
+}
+
+.palette {
+  width: min(560px, 90vw);
+  max-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 16px 40px rgb(0 0 0 / 35%);
+  overflow: hidden;
+}
+
+.palette input {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  padding: 12px 14px;
+  outline: none;
+}
+
+.palette ul {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+}
+
+.palette li.active {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  border-radius: 6px;
+}
+
+.palette li button {
+  width: 100%;
+  border: none;
+  text-align: left;
+  padding: 6px 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.palette li button:hover {
+  background: transparent;
+}
+
+.palette li.empty {
+  padding: 8px;
+  color: var(--fg-dim);
+  font-size: 13px;
+}

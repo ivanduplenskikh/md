@@ -2,16 +2,30 @@ import { useEffect, useState } from "react";
 import { Sidebar } from "./components/Sidebar";
 import { Editor } from "./components/Editor";
 import { Preview } from "./components/Preview";
+import { QuickOpen } from "./components/QuickOpen";
 import { useStore } from "./store";
 import "./App.css";
 
 type ViewMode = "edit" | "split" | "preview";
 
 function App() {
-  const { init, save, newNote, activePath, content, dirty, saving, error, renameActive } =
-    useStore();
+  const {
+    init,
+    save,
+    newNote,
+    chooseVault,
+    openNote,
+    notes,
+    activePath,
+    content,
+    dirty,
+    saving,
+    error,
+    renameActive,
+  } = useStore();
   const [mode, setMode] = useState<ViewMode>("split");
   const [renaming, setRenaming] = useState<string | null>(null);
+  const [quickOpen, setQuickOpen] = useState(false);
 
   useEffect(() => {
     void init();
@@ -25,20 +39,43 @@ function App() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!e.ctrlKey && !e.metaKey) return;
-      if (e.key === "s") {
+
+      // Capture phase, so Monaco's own bindings don't swallow these first.
+      const digit = /^[1-9]$/.test(e.key) ? Number(e.key) : null;
+      if (digit !== null) {
+        const note = notes[digit - 1];
+        if (!note) return;
         e.preventDefault();
-        void save();
-      } else if (e.key === "n") {
-        e.preventDefault();
-        void newNote();
-      } else if (e.key === "e") {
-        e.preventDefault();
-        setMode((m) => (m === "edit" ? "split" : m === "split" ? "preview" : "edit"));
+        void openNote(note.path);
+        return;
+      }
+
+      switch (e.key.toLowerCase()) {
+        case "s":
+          e.preventDefault();
+          void save();
+          break;
+        case "n":
+          e.preventDefault();
+          void newNote();
+          break;
+        case "o":
+          e.preventDefault();
+          void chooseVault();
+          break;
+        case "p":
+          e.preventDefault();
+          setQuickOpen(true);
+          break;
+        case "e":
+          e.preventDefault();
+          setMode((m) => (m === "edit" ? "split" : m === "split" ? "preview" : "edit"));
+          break;
       }
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [save, newNote]);
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [save, newNote, chooseVault, openNote, notes]);
 
   const title = activePath?.replace(/\.md$/i, "") ?? "";
 
@@ -88,6 +125,7 @@ function App() {
           {mode !== "edit" && <Preview />}
         </div>
       </main>
+      {quickOpen && <QuickOpen onClose={() => setQuickOpen(false)} />}
     </div>
   );
 }
