@@ -484,6 +484,12 @@ button.icon:hover:not(:disabled) {
   gap: 6px;
 }
 
+.modes .icon {
+  width: 28px;
+  height: 28px;
+  font-size: 12px;
+}
+
 .segmented {
   display: flex;
   border: 1px solid var(--border);
