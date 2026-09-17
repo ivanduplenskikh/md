@@ -2,7 +2,6 @@ import {
   readTextFile,
   writeTextFile,
   readDir,
-  mkdir,
   remove,
   rename,
   exists,
@@ -107,10 +106,4 @@ export async function renameNote(vault: string, path: string, newName: string) {
 export function deleteNote(vault: string, path: string) {
   if (!isTauri) return browserVault.deleteNote(vault, path);
   return remove(join(vault, path));
-}
-
-export async function ensureDir(vault: string, relative: string) {
-  const dir = join(vault, relative);
-  if (!(await exists(dir))) await mkdir(dir, { recursive: true });
-  return dir;
 }
