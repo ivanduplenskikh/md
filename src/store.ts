@@ -10,6 +10,7 @@ type State = {
   content: string;
   cursor: { line: number; column: number };
   quickOpen: boolean;
+  commandOpen: boolean;
   dirty: boolean;
   saving: boolean;
   error: string | null;
@@ -21,6 +22,7 @@ type State = {
   closeTab: (path: string) => Promise<void>;
   setCursor: (cursor: { line: number; column: number }) => void;
   setQuickOpen: (open: boolean) => void;
+  setCommandOpen: (open: boolean) => void;
   setContent: (content: string) => void;
   save: () => Promise<void>;
   newNote: () => Promise<void>;
@@ -44,6 +46,7 @@ export const useStore = create<State>((set, get) => {
     content: "",
     cursor: { line: 1, column: 1 },
     quickOpen: false,
+    commandOpen: false,
     dirty: false,
     saving: false,
     error: null,
@@ -117,6 +120,8 @@ export const useStore = create<State>((set, get) => {
     setCursor: (cursor) => set({ cursor }),
 
     setQuickOpen: (quickOpen) => set({ quickOpen }),
+
+    setCommandOpen: (commandOpen) => set({ commandOpen }),
 
     setContent: (content) => set({ content, dirty: true }),
 

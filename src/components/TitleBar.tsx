@@ -1,11 +1,15 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useEffect, useState } from "react";
 import { isTauri } from "../lib/vault";
+import { useStore } from "../store";
 
 const appWindow = isTauri ? getCurrentWindow() : null;
 
 export function TitleBar() {
   const [maximized, setMaximized] = useState(false);
+  const activePath = useStore((s) => s.activePath);
+  const vaultPath = useStore((s) => s.vaultPath);
+  const setCommandOpen = useStore((s) => s.setCommandOpen);
 
   useEffect(() => {
     if (!appWindow) return;
@@ -18,12 +22,30 @@ export function TitleBar() {
     };
   }, []);
 
+  const folder = vaultPath?.split(/[\\/]/).filter(Boolean).pop();
+
   return (
     <div className="titlebar" data-tauri-drag-region>
       <img className="app-icon" src="/icon.png" alt="" data-tauri-drag-region />
       <span className="app-name" data-tauri-drag-region>
         md
       </span>
+
+      <button
+        className="title-picker"
+        onClick={() => setCommandOpen(true)}
+        title="Show commands (Ctrl+Shift+P)"
+      >
+        {activePath ? (
+          <>
+            <span className="file">{activePath.replace(/\.md$/i, "")}</span>
+            {folder && <span className="folder">{folder}</span>}
+          </>
+        ) : (
+          <span className="folder">Search notes…</span>
+        )}
+      </button>
+
       {appWindow && (
         <div className="window-controls">
           <button aria-label="Minimize" onClick={() => appWindow.minimize()}>

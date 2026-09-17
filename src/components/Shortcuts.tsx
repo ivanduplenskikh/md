@@ -3,6 +3,7 @@ const SHORTCUTS: [string, string][] = [
   ["Ctrl + N", "New note"],
   ["Ctrl + O", "Open a .md file"],
   ["Ctrl + P", "Quick open by name"],
+  ["Ctrl + Shift + P", "Command palette"],
   ["Ctrl + 1…9", "Jump to Nth note"],
   ["Ctrl + W", "Close tab"],
   ["Ctrl + B", "Toggle sidebar"],

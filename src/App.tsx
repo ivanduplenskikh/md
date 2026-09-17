@@ -3,6 +3,7 @@ import { Sidebar } from "./components/Sidebar";
 import { Editor } from "./components/Editor";
 import { Preview } from "./components/Preview";
 import { QuickOpen } from "./components/QuickOpen";
+import { CommandPalette, type Command } from "./components/CommandPalette";
 import { Shortcuts } from "./components/Shortcuts";
 import { Tabs } from "./components/Tabs";
 import { TitleBar } from "./components/TitleBar";
@@ -22,6 +23,7 @@ function App() {
     openFile,
     openNote,
     closeTab,
+    deleteNote,
     notes,
     activePath,
     content,
@@ -29,6 +31,8 @@ function App() {
     renameActive,
     quickOpen,
     setQuickOpen,
+    commandOpen,
+    setCommandOpen,
   } = useStore();
   const [mode, setMode] = useState<ViewMode>("split");
   const [renaming, setRenaming] = useState<string | null>(null);
@@ -51,6 +55,7 @@ function App() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setQuickOpen(false);
+        setCommandOpen(false);
         setShortcuts(false);
         return;
       }
@@ -81,7 +86,8 @@ function App() {
           break;
         case "p":
           e.preventDefault();
-          setQuickOpen(true);
+          if (e.shiftKey) setCommandOpen(true);
+          else setQuickOpen(true);
           break;
         case "e":
           e.preventDefault();
@@ -103,7 +109,49 @@ function App() {
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [save, newNote, chooseVault, openFile, openNote, closeTab, activePath, notes, setQuickOpen]);
+  }, [
+    save,
+    newNote,
+    chooseVault,
+    openFile,
+    openNote,
+    closeTab,
+    activePath,
+    notes,
+    setQuickOpen,
+    setCommandOpen,
+  ]);
+
+  const commands: Command[] = [
+    { id: "new", label: "New note", hint: "Ctrl+N", run: () => void newNote() },
+    { id: "open", label: "Open file…", hint: "Ctrl+O", run: () => void openFile() },
+    { id: "folder", label: "Open folder…", run: () => void chooseVault() },
+    { id: "goto", label: "Go to note…", hint: "Ctrl+P", run: () => setQuickOpen(true) },
+    { id: "save", label: "Save note", hint: "Ctrl+S", run: () => void save() },
+    {
+      id: "rename",
+      label: "Rename note…",
+      run: () => setRenaming(activePath?.replace(/\.md$/i, "") ?? ""),
+    },
+    {
+      id: "delete",
+      label: "Delete note",
+      run: () => {
+        if (activePath && confirm(`Delete "${activePath}"?`)) void deleteNote(activePath);
+      },
+    },
+    {
+      id: "close",
+      label: "Close tab",
+      hint: "Ctrl+W",
+      run: () => activePath && void closeTab(activePath),
+    },
+    { id: "view-edit", label: "View: Editor only", run: () => setMode("edit") },
+    { id: "view-split", label: "View: Split", run: () => setMode("split") },
+    { id: "view-preview", label: "View: Preview only", run: () => setMode("preview") },
+    { id: "sidebar", label: "Toggle sidebar", hint: "Ctrl+B", run: () => setCollapsed((c) => !c) },
+    { id: "shortcuts", label: "Keyboard shortcuts", hint: "Ctrl+/", run: () => setShortcuts(true) },
+  ];
 
   const title = activePath?.replace(/\.md$/i, "") ?? "";
 
@@ -205,6 +253,9 @@ function App() {
       </main>
       <StatusBar />
       {quickOpen && <QuickOpen onClose={() => setQuickOpen(false)} />}
+      {commandOpen && (
+        <CommandPalette commands={commands} onClose={() => setCommandOpen(false)} />
+      )}
       {shortcuts && <Shortcuts onClose={() => setShortcuts(false)} />}
     </div>
   );
