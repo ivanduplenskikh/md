@@ -1,7 +1,8 @@
 import { useStore } from "../store";
 
 export function Sidebar() {
-  const { notes, activePath, vaultPath, openNote, newNote, chooseVault, deleteNote } = useStore();
+  const { notes, activePath, vaultPath, openNote, newNote, chooseVault, openFile, deleteNote } =
+    useStore();
 
   return (
     <aside className="sidebar">
@@ -9,8 +10,11 @@ export function Sidebar() {
         <button onClick={newNote} disabled={!vaultPath} title="New note (Ctrl+N)">
           + New
         </button>
-        <button onClick={chooseVault} title="Choose vault folder (Ctrl+O)">
-          Vault
+        <button onClick={openFile} title="Open a .md file (Ctrl+O)">
+          Open…
+        </button>
+        <button onClick={chooseVault} title="Choose vault folder">
+          Folder…
         </button>
       </div>
       <div className="vault-path" title={vaultPath ?? ""}>

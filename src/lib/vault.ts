@@ -8,6 +8,7 @@ import {
 } from "@tauri-apps/plugin-fs";
 import { open } from "@tauri-apps/plugin-dialog";
 import { Store } from "@tauri-apps/plugin-store";
+import { invoke } from "@tauri-apps/api/core";
 import { browserVault } from "./browserVault";
 
 const STORE_FILE = "md.json";
@@ -44,10 +45,34 @@ export async function pickVault(): Promise<string | null> {
   if (!isTauri) return browserVault.pickVault();
   const selected = await open({ directory: true, multiple: false });
   if (typeof selected !== "string") return null;
-  const s = await store();
-  await s.set(VAULT_KEY, selected);
-  await s.save();
+  await rememberVault(selected);
   return selected;
+}
+
+/** Opens a `.md` file dialog (which lists existing notes) and uses its folder as the vault. */
+export async function pickNoteFile(): Promise<{ vault: string; path: string } | null> {
+  if (!isTauri) {
+    const vault = await browserVault.pickVault();
+    const [first] = await browserVault.listNotes();
+    return first ? { vault, path: first.path } : null;
+  }
+  const selected = await open({
+    multiple: false,
+    filters: [{ name: "Markdown", extensions: ["md", "markdown"] }],
+  });
+  if (typeof selected !== "string") return null;
+
+  const sep = Math.max(selected.lastIndexOf("/"), selected.lastIndexOf("\\"));
+  const vault = selected.slice(0, sep);
+  await invoke("allow_vault", { path: vault });
+  await rememberVault(vault);
+  return { vault, path: selected.slice(sep + 1) };
+}
+
+async function rememberVault(path: string) {
+  const s = await store();
+  await s.set(VAULT_KEY, path);
+  await s.save();
 }
 
 export async function listNotes(vault: string): Promise<Note[]> {

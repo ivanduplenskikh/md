@@ -14,6 +14,7 @@ function App() {
     save,
     newNote,
     chooseVault,
+    openFile,
     openNote,
     notes,
     activePath,
@@ -61,7 +62,7 @@ function App() {
           break;
         case "o":
           e.preventDefault();
-          void chooseVault();
+          void openFile();
           break;
         case "p":
           e.preventDefault();
@@ -75,7 +76,7 @@ function App() {
     };
     window.addEventListener("keydown", onKey, true);
     return () => window.removeEventListener("keydown", onKey, true);
-  }, [save, newNote, chooseVault, openNote, notes]);
+  }, [save, newNote, chooseVault, openFile, openNote, notes]);
 
   const title = activePath?.replace(/\.md$/i, "") ?? "";
 

@@ -12,6 +12,7 @@ type State = {
   error: string | null;
   init: () => Promise<void>;
   chooseVault: () => Promise<void>;
+  openFile: () => Promise<void>;
   refresh: () => Promise<void>;
   openNote: (path: string) => Promise<void>;
   setContent: (content: string) => void;
@@ -51,6 +52,17 @@ export const useStore = create<State>((set, get) => {
       try {
         const picked = await vault.pickVault();
         if (picked) await openVault(picked);
+      } catch (e) {
+        set({ error: String(e) });
+      }
+    },
+
+    openFile: async () => {
+      try {
+        const picked = await vault.pickNoteFile();
+        if (!picked) return;
+        await openVault(picked.vault);
+        await get().openNote(picked.path);
       } catch (e) {
         set({ error: String(e) });
       }
