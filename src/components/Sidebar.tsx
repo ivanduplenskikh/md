@@ -5,9 +5,14 @@ export function Sidebar() {
   const { notes, activePath, vaultPath, openNote, newNote, chooseVault, openFile, deleteNote } =
     useStore();
 
+  const folderName = vaultPath?.split(/[\\/]/).filter(Boolean).pop() ?? "No folder opened";
+
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
+        <span className="vault-name" title={vaultPath ?? ""}>
+          {folderName}
+        </span>
         <button
           className="icon"
           onClick={newNote}
@@ -33,9 +38,6 @@ export function Sidebar() {
         >
           <FolderIcon />
         </button>
-      </div>
-      <div className="vault-path" title={vaultPath ?? ""}>
-        {vaultPath ?? "No vault selected"}
       </div>
       <ul className="note-list">
         {notes.map((note) => (

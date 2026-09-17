@@ -97,6 +97,29 @@ button:disabled {
   flex: 1;
 }
 
+.statusbar .folder,
+.statusbar .file {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.statusbar .folder {
+  color: var(--fg-dim);
+  flex-shrink: 1;
+}
+
+.statusbar .file {
+  color: var(--fg);
+  flex-shrink: 0;
+}
+
+.statusbar .sep {
+  color: var(--fg-dim);
+  opacity: 0.6;
+}
+
 .statusbar .dirty {
   color: var(--accent);
 }
@@ -163,8 +186,22 @@ button:disabled {
 
 .sidebar-header {
   display: flex;
-  gap: 6px;
-  padding: 10px;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 8px 8px 12px;
+}
+
+.vault-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 button.icon {
@@ -179,15 +216,6 @@ button.icon {
 
 button.icon:hover:not(:disabled) {
   color: var(--fg);
-}
-
-.vault-path {
-  padding: 0 10px 8px;
-  font-size: 11px;
-  color: var(--fg-dim);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .note-list {

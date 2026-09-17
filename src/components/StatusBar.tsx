@@ -5,6 +5,7 @@ export function StatusBar() {
   const cursor = useStore((s) => s.cursor);
   const dirty = useStore((s) => s.dirty);
   const saving = useStore((s) => s.saving);
+  const vaultPath = useStore((s) => s.vaultPath);
   const activePath = useStore((s) => s.activePath);
 
   const words = content.trim() ? content.trim().split(/\s+/).length : 0;
@@ -12,7 +13,11 @@ export function StatusBar() {
 
   return (
     <footer className="statusbar">
-      <span>{activePath ?? "No note open"}</span>
+      <span className="folder" title={vaultPath ?? ""}>
+        {vaultPath ?? "No folder opened"}
+      </span>
+      {activePath && <span className="sep">›</span>}
+      <span className="file">{activePath ?? ""}</span>
       <span className="spacer" />
       <span>
         Ln {cursor.line}, Col {cursor.column}
