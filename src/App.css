@@ -97,6 +97,13 @@ button:disabled {
   flex: 1;
 }
 
+.statusbar .path {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+}
+
 .statusbar .folder,
 .statusbar .file {
   min-width: 0;

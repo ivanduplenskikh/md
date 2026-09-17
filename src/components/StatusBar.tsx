@@ -15,17 +15,19 @@ export function StatusBar() {
 
   return (
     <footer className="statusbar">
-      <button
-        className="folder"
-        onClick={chooseVault}
-        title={vaultPath ? `${vaultPath}\nClick to change folder` : "Click to choose a folder"}
-      >
-        {vaultPath ?? "No folder opened"}
-      </button>
-      {activePath && <span className="sep">›</span>}
-      <button className="file" onClick={() => setQuickOpen(true)} title="Go to note (Ctrl+P)">
-        {activePath ?? ""}
-      </button>
+      <div className="path">
+        <button
+          className="folder"
+          onClick={chooseVault}
+          title={vaultPath ? `${vaultPath}\nClick to change folder` : "Click to choose a folder"}
+        >
+          {vaultPath ?? "No folder opened"}
+        </button>
+        {activePath && <span className="sep">›</span>}
+        <button className="file" onClick={() => setQuickOpen(true)} title="Go to note (Ctrl+P)">
+          {activePath ?? ""}
+        </button>
+      </div>
       <span className="spacer" />
       <span>
         Ln {cursor.line}, Col {cursor.column}
