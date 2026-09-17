@@ -96,6 +96,21 @@ export const PreviewIcon = () => (
   </svg>
 );
 
+export const ZenIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    width="16"
+    height="16"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    aria-hidden="true"
+  >
+    <path d="M6 6h12M4 11h16M6 16h12M9 21h6" />
+  </svg>
+);
+
 export const TrashIcon = () => (
   <svg
     viewBox="0 0 24 24"

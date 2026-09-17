@@ -1,18 +1,7 @@
-import { useEffect, useState } from "react";
 import MonacoEditor from "@monaco-editor/react";
 import "../lib/monaco";
+import { usePrefersDark } from "../lib/useDark";
 import { useStore } from "../store";
-
-function usePrefersDark() {
-  const [dark, setDark] = useState(() => matchMedia("(prefers-color-scheme: dark)").matches);
-  useEffect(() => {
-    const mq = matchMedia("(prefers-color-scheme: dark)");
-    const onChange = (e: MediaQueryListEvent) => setDark(e.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
-  return dark;
-}
 
 const options = {
   wordWrap: "on",
@@ -30,14 +19,30 @@ const options = {
   unicodeHighlight: { ambiguousCharacters: false },
 } as const;
 
-export function Editor() {
+const zenOptions = {
+  ...options,
+  fontSize: 17,
+  fontFamily: "Inter, system-ui, Avenir, Helvetica, Arial, sans-serif",
+  lineHeight: 1.8,
+  lineNumbers: "off",
+  glyphMargin: false,
+  folding: false,
+  lineDecorationsWidth: 0,
+  lineNumbersMinChars: 0,
+  renderLineHighlight: "none",
+  padding: { top: 48, bottom: 240 },
+  overviewRulerLanes: 0,
+  scrollbar: { vertical: "hidden" },
+} as const;
+
+export function Editor({ zen = false }: { zen?: boolean }) {
   const content = useStore((s) => s.content);
   const setContent = useStore((s) => s.setContent);
   const setCursor = useStore((s) => s.setCursor);
   const dark = usePrefersDark();
 
   return (
-    <div className="editor">
+    <div className={`editor ${zen ? "zen" : ""}`}>
       <MonacoEditor
         language="markdown"
         theme={dark ? "vs-dark" : "vs"}
@@ -48,7 +53,7 @@ export function Editor() {
             setCursor({ line: e.position.lineNumber, column: e.position.column }),
           )
         }
-        options={options}
+        options={zen ? zenOptions : options}
         height="100%"
       />
     </div>

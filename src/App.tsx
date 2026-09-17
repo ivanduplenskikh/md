@@ -2,22 +2,24 @@ import { useEffect, useRef, useState } from "react";
 import { Sidebar } from "./components/Sidebar";
 import { Editor } from "./components/Editor";
 import { Preview } from "./components/Preview";
+import { Wysiwyg } from "./components/Wysiwyg";
 import { QuickOpen } from "./components/QuickOpen";
 import { CommandPalette, type Command } from "./components/CommandPalette";
 import { Shortcuts } from "./components/Shortcuts";
 import { Tabs } from "./components/Tabs";
 import { TitleBar } from "./components/TitleBar";
 import { StatusBar } from "./components/StatusBar";
-import { EditIcon, PreviewIcon, SidebarIcon, SplitIcon } from "./components/icons";
+import { EditIcon, PreviewIcon, SidebarIcon, SplitIcon, ZenIcon } from "./components/icons";
 import { useStore } from "./store";
 import "./App.css";
 
-type ViewMode = "edit" | "split" | "preview";
+type ViewMode = "edit" | "split" | "preview" | "zen";
 
 const MODES = [
   { id: "edit", label: "Editor only", Icon: EditIcon },
   { id: "split", label: "Split", Icon: SplitIcon },
   { id: "preview", label: "Preview only", Icon: PreviewIcon },
+  { id: "zen", label: "Write (WYSIWYG)", Icon: ZenIcon },
 ] as const satisfies readonly { id: ViewMode; label: string; Icon: () => React.ReactElement }[];
 
 function App() {
@@ -155,6 +157,7 @@ function App() {
     { id: "view-edit", label: "View: Editor only", run: () => setMode("edit") },
     { id: "view-split", label: "View: Split", run: () => setMode("split") },
     { id: "view-preview", label: "View: Preview only", run: () => setMode("preview") },
+    { id: "view-zen", label: "View: Write (WYSIWYG)", run: () => setMode("zen") },
     { id: "sidebar", label: "Toggle sidebar", hint: "Ctrl+B", run: () => setCollapsed((c) => !c) },
     { id: "shortcuts", label: "Keyboard shortcuts", hint: "Ctrl+/", run: () => setShortcuts(true) },
   ];
@@ -266,9 +269,10 @@ function App() {
               : undefined
           }
         >
-          {mode !== "preview" && <Editor />}
+          {mode !== "preview" && mode !== "zen" && <Editor />}
+          {mode === "zen" && <Wysiwyg key={activePath} />}
           {mode === "split" && <div className="resizer vertical" onPointerDown={startSplitDrag} />}
-          {mode !== "edit" && <Preview />}
+          {mode !== "edit" && mode !== "zen" && <Preview />}
         </div>
       </main>
       <StatusBar />

@@ -556,6 +556,34 @@ button.icon:hover:not(:disabled) {
   height: 100%;
 }
 
+/* Zen: single centered writing column. */
+.panes.zen {
+  overflow-y: auto;
+}
+
+.wysiwyg {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  padding: 24px 0 25vh;
+}
+
+.wysiwyg .milkdown {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.wysiwyg .milkdown .ProseMirror {
+  padding: 0;
+}
+
+.editor.zen {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  border-right: none;
+}
+
 .preview {
   padding: 40px 32px 25vh;
   line-height: 1.7;
@@ -672,6 +700,30 @@ button.icon:hover:not(:disabled) {
 
 .markdown-alert-caution {
   --alert: #f85149;
+}
+
+/* Alerts inside the WYSIWYG editor: Crepe styles blockquotes itself, so override it. */
+.alert-marker {
+  display: none;
+}
+
+.milkdown .ProseMirror blockquote.markdown-alert {
+  padding: 8px 14px;
+  margin: 1em 0;
+  border-left: 4px solid var(--alert);
+  border-radius: 0 6px 6px 0;
+  background: color-mix(in srgb, var(--alert) 10%, transparent);
+}
+
+.milkdown .ProseMirror blockquote.markdown-alert::before {
+  content: attr(data-alert);
+  display: block;
+  position: static;
+  width: auto;
+  background: none;
+  border-radius: 0;
+  font-weight: 600;
+  color: var(--alert);
 }
 
 /* Quick open palette */
