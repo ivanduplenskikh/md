@@ -386,3 +386,40 @@ button:disabled {
   color: var(--fg-dim);
   font-size: 13px;
 }
+
+.shortcuts header {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+}
+
+.shortcuts dl {
+  margin: 0;
+  padding: 8px 14px 14px;
+  overflow-y: auto;
+}
+
+.shortcuts dl > div {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 5px 0;
+}
+
+.shortcuts dt {
+  flex: 0 0 110px;
+}
+
+.shortcuts dd {
+  margin: 0;
+  color: var(--fg-dim);
+}
+
+.shortcuts kbd {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 12px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 2px 6px;
+}

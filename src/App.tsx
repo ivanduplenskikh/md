@@ -3,6 +3,7 @@ import { Sidebar } from "./components/Sidebar";
 import { Editor } from "./components/Editor";
 import { Preview } from "./components/Preview";
 import { QuickOpen } from "./components/QuickOpen";
+import { Shortcuts } from "./components/Shortcuts";
 import { useStore } from "./store";
 import "./App.css";
 
@@ -27,6 +28,7 @@ function App() {
   const [mode, setMode] = useState<ViewMode>("split");
   const [renaming, setRenaming] = useState<string | null>(null);
   const [quickOpen, setQuickOpen] = useState(false);
+  const [shortcuts, setShortcuts] = useState(false);
 
   useEffect(() => {
     void init();
@@ -39,6 +41,11 @@ function App() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setQuickOpen(false);
+        setShortcuts(false);
+        return;
+      }
       if (!e.ctrlKey && !e.metaKey) return;
 
       // Capture phase, so Monaco's own bindings don't swallow these first.
@@ -71,6 +78,10 @@ function App() {
         case "e":
           e.preventDefault();
           setMode((m) => (m === "edit" ? "split" : m === "split" ? "preview" : "edit"));
+          break;
+        case "/":
+          e.preventDefault();
+          setShortcuts((s) => !s);
           break;
       }
     };
@@ -118,6 +129,9 @@ function App() {
                 {m}
               </button>
             ))}
+            <button title="Keyboard shortcuts (Ctrl+/)" onClick={() => setShortcuts(true)}>
+              ?
+            </button>
           </div>
         </header>
         {error && <div className="error">{error}</div>}
@@ -127,6 +141,7 @@ function App() {
         </div>
       </main>
       {quickOpen && <QuickOpen onClose={() => setQuickOpen(false)} />}
+      {shortcuts && <Shortcuts onClose={() => setShortcuts(false)} />}
     </div>
   );
 }
