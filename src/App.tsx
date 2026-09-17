@@ -5,6 +5,7 @@ import { Preview } from "./components/Preview";
 import { QuickOpen } from "./components/QuickOpen";
 import { Shortcuts } from "./components/Shortcuts";
 import { Tabs } from "./components/Tabs";
+import { TitleBar } from "./components/TitleBar";
 import { StatusBar } from "./components/StatusBar";
 import { SidebarIcon } from "./components/icons";
 import { useStore } from "./store";
@@ -136,6 +137,7 @@ function App() {
       className={`app ${collapsed ? "collapsed" : ""}`}
       style={{ "--sidebar-w": `${sidebarWidth}px` } as React.CSSProperties}
     >
+      <TitleBar />
       {!collapsed && <Sidebar />}
       {!collapsed && <div className="resizer vertical" onPointerDown={startSidebarDrag} />}
       <main className="main">
