@@ -432,17 +432,41 @@ button.icon:hover:not(:disabled) {
 .modes {
   margin-left: auto;
   display: flex;
-  gap: 4px;
+  align-items: center;
+  gap: 6px;
 }
 
-.modes button {
-  font-size: 12px;
-  text-transform: capitalize;
+.segmented {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
 }
 
-.modes button.active {
-  border-color: var(--accent);
-  color: var(--accent);
+.segmented button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 26px;
+  color: var(--fg-dim);
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+.segmented button + button {
+  border-left: 1px solid var(--border);
+}
+
+.segmented button:hover {
+  background: color-mix(in srgb, var(--fg) 8%, transparent);
+  color: var(--fg);
+}
+
+.segmented button.active {
+  background: color-mix(in srgb, var(--fg) 12%, transparent);
+  color: var(--fg);
 }
 
 .error {

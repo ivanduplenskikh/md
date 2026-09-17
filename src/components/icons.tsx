@@ -58,6 +58,44 @@ export const SidebarIcon = () => (
   </svg>
 );
 
+export const EditIcon = () => (
+  <Icon path="M4 20h4l10-10a2.8 2.8 0 0 0-4-4L4 16z" />
+);
+
+export const SplitIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    width="16"
+    height="16"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <rect x="3" y="4" width="18" height="16" rx="2" />
+    <path d="M12 4v16" />
+  </svg>
+);
+
+export const PreviewIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    width="16"
+    height="16"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z" />
+    <circle cx="12" cy="12" r="2.5" />
+  </svg>
+);
+
 export const TrashIcon = () => (
   <svg
     viewBox="0 0 24 24"

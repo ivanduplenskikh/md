@@ -8,11 +8,17 @@ import { Shortcuts } from "./components/Shortcuts";
 import { Tabs } from "./components/Tabs";
 import { TitleBar } from "./components/TitleBar";
 import { StatusBar } from "./components/StatusBar";
-import { SidebarIcon } from "./components/icons";
+import { EditIcon, PreviewIcon, SidebarIcon, SplitIcon } from "./components/icons";
 import { useStore } from "./store";
 import "./App.css";
 
 type ViewMode = "edit" | "split" | "preview";
+
+const MODES = [
+  { id: "edit", label: "Editor only", Icon: EditIcon },
+  { id: "split", label: "Split", Icon: SplitIcon },
+  { id: "preview", label: "Preview only", Icon: PreviewIcon },
+] as const satisfies readonly { id: ViewMode; label: string; Icon: () => React.ReactElement }[];
 
 function App() {
   const {
@@ -226,12 +232,26 @@ function App() {
             />
           )}
           <div className="modes">
-            {(["edit", "split", "preview"] as ViewMode[]).map((m) => (
-              <button key={m} className={mode === m ? "active" : ""} onClick={() => setMode(m)}>
-                {m}
-              </button>
-            ))}
-            <button title="Keyboard shortcuts (Ctrl+/)" onClick={() => setShortcuts(true)}>
+            <div className="segmented">
+              {MODES.map(({ id, label, Icon }) => (
+                <button
+                  key={id}
+                  className={mode === id ? "active" : ""}
+                  onClick={() => setMode(id)}
+                  title={`${label} (Ctrl+E cycles)`}
+                  aria-label={label}
+                  aria-pressed={mode === id}
+                >
+                  <Icon />
+                </button>
+              ))}
+            </div>
+            <button
+              className="icon"
+              title="Keyboard shortcuts (Ctrl+/)"
+              aria-label="Keyboard shortcuts"
+              onClick={() => setShortcuts(true)}
+            >
               ?
             </button>
           </div>
