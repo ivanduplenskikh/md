@@ -108,6 +108,16 @@ button:disabled {
 .statusbar .folder {
   color: var(--fg-dim);
   flex-shrink: 1;
+  font: inherit;
+  border: none;
+  border-radius: 4px;
+  padding: 1px 5px;
+  cursor: pointer;
+}
+
+.statusbar .folder:hover {
+  color: var(--fg);
+  background: color-mix(in srgb, var(--fg) 10%, transparent);
 }
 
 .statusbar .file {

@@ -7,15 +7,20 @@ export function StatusBar() {
   const saving = useStore((s) => s.saving);
   const vaultPath = useStore((s) => s.vaultPath);
   const activePath = useStore((s) => s.activePath);
+  const chooseVault = useStore((s) => s.chooseVault);
 
   const words = content.trim() ? content.trim().split(/\s+/).length : 0;
   const lines = content ? content.split("\n").length : 0;
 
   return (
     <footer className="statusbar">
-      <span className="folder" title={vaultPath ?? ""}>
+      <button
+        className="folder"
+        onClick={chooseVault}
+        title={vaultPath ? `${vaultPath}\nClick to change folder` : "Click to choose a folder"}
+      >
         {vaultPath ?? "No folder opened"}
-      </span>
+      </button>
       {activePath && <span className="sep">›</span>}
       <span className="file">{activePath ?? ""}</span>
       <span className="spacer" />
