@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import * as vault from "./lib/vault";
+import { loadSettings, saveSettings } from "./lib/settings";
 import type { Note } from "./lib/vault";
 
 type State = {
@@ -32,11 +33,29 @@ type State = {
 };
 
 export const useStore = create<State>((set, get) => {
-  async function openVault(path: string) {
+  /** `restore` is only used on launch, when the previous session's tabs are reopened. */
+  async function openVault(path: string, restore = false) {
     set({ vaultPath: path, openTabs: [], activePath: null, content: "", dirty: false });
     const notes = await vault.listNotes(path);
     set({ notes });
+
+    if (restore) {
+      const saved = await loadSettings();
+      const known = new Set(notes.map((n) => n.path));
+      const tabs = (saved.openTabs ?? []).filter((p) => known.has(p));
+      if (tabs.length) {
+        set({ openTabs: tabs });
+        const active = saved.activePath && known.has(saved.activePath) ? saved.activePath : tabs[0];
+        await get().openNote(active);
+        return;
+      }
+    }
+
     if (notes[0]) await get().openNote(notes[0].path);
+  }
+
+  function persistSession() {
+    void saveSettings({ openTabs: get().openTabs, activePath: get().activePath });
   }
 
   return {
@@ -55,7 +74,7 @@ export const useStore = create<State>((set, get) => {
     init: async () => {
       try {
         const saved = await vault.loadSavedVault();
-        if (saved) await openVault(saved);
+        if (saved) await openVault(saved, true);
       } catch (e) {
         set({ error: String(e) });
       }
@@ -100,6 +119,7 @@ export const useStore = create<State>((set, get) => {
           error: null,
           openTabs: openTabs.includes(path) ? openTabs : [...openTabs, path],
         });
+        persistSession();
       } catch (e) {
         set({ error: String(e) });
       }
@@ -110,12 +130,16 @@ export const useStore = create<State>((set, get) => {
       const remaining = openTabs.filter((p) => p !== path);
       if (activePath !== path) {
         set({ openTabs: remaining });
+        persistSession();
         return;
       }
       const neighbour = remaining[Math.min(openTabs.indexOf(path), remaining.length - 1)];
       set({ openTabs: remaining });
       if (neighbour) await get().openNote(neighbour);
-      else set({ activePath: null, content: "", dirty: false });
+      else {
+        set({ activePath: null, content: "", dirty: false });
+        persistSession();
+      }
     },
 
     setCursor: (cursor) => set({ cursor }),

@@ -12,6 +12,7 @@ import { EditIcon, PreviewIcon, SidebarIcon, SplitIcon, ZenIcon } from "./compon
 import { useStore } from "./store";
 import { confirmDelete } from "./lib/confirm";
 import { stripExtension } from "./lib/paths";
+import { loadSettings, saveSettings } from "./lib/settings";
 import "./App.css";
 
 type ViewMode = "edit" | "split" | "preview" | "zen";
@@ -50,6 +51,26 @@ function App() {
   const [sidebarWidth, setSidebarWidth] = useState(260);
   const [split, setSplit] = useState(0.5);
   const panesRef = useRef<HTMLDivElement>(null);
+  const restored = useRef(false);
+
+  useEffect(() => {
+    void loadSettings().then((saved) => {
+      if (saved.mode) setMode(saved.mode as ViewMode);
+      if (saved.sidebarWidth) setSidebarWidth(saved.sidebarWidth);
+      if (saved.collapsed !== undefined) setCollapsed(saved.collapsed);
+      if (saved.split) setSplit(saved.split);
+      restored.current = true;
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!restored.current) return;
+    const id = setTimeout(
+      () => void saveSettings({ mode, sidebarWidth, collapsed, split }),
+      300,
+    );
+    return () => clearTimeout(id);
+  }, [mode, sidebarWidth, collapsed, split]);
 
   useEffect(() => {
     void init();
