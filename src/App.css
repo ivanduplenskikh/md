@@ -97,14 +97,13 @@ button:disabled {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
+  display: block;
   width: min(440px, 40vw);
-  justify-content: center;
   height: 22px;
   padding: 0 10px;
   font-size: 12px;
+  line-height: 20px;
+  text-align: center;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--bg);
@@ -119,13 +118,12 @@ button:disabled {
 
 .title-picker .file {
   color: var(--fg);
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .title-picker .folder {
   color: var(--fg-dim);
   font-size: 11px;
+  margin-left: 8px;
 }
 
 .window-controls {
@@ -322,8 +320,8 @@ button.icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   padding: 0;
   color: var(--fg-dim);
 }
