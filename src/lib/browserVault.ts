@@ -1,4 +1,6 @@
 import type { Note } from "./vault";
+import { sanitizeName, uniqueNotePath } from "./noteNames";
+import { stripExtension } from "./paths";
 
 // In-memory/localStorage vault used when the UI runs outside the Tauri webview.
 const KEY = "md:browser-vault";
@@ -34,7 +36,7 @@ export const browserVault = {
   listNotes: async (): Promise<Note[]> =>
     Object.keys(read())
       .sort()
-      .map((path) => ({ path, name: path.replace(/\.md$/i, "") })),
+      .map((path) => ({ path, name: stripExtension(path) })),
 
   readNote: async (_vault: string, path: string) => read()[path] ?? "",
 
@@ -46,18 +48,15 @@ export const browserVault = {
 
   createNote: async (_vault: string, name = "Untitled"): Promise<Note> => {
     const docs = read();
-    let path = `${name}.md`;
-    let n = 1;
-    while (docs[path]) path = `${name} ${++n}.md`;
-    docs[path] = `# ${path.replace(/\.md$/, "")}\n\n`;
+    const path = await uniqueNotePath(name, (candidate) => candidate in docs);
+    docs[path] = `# ${stripExtension(path)}\n\n`;
     write(docs);
-    return { path, name: path.replace(/\.md$/, "") };
+    return { path, name: stripExtension(path) };
   },
 
   renameNote: async (_vault: string, path: string, newName: string) => {
     const docs = read();
-    const safe = newName.replace(/[\\/:*?"<>|]/g, "-").trim() || "Untitled";
-    const newPath = `${safe}.md`;
+    const newPath = `${sanitizeName(newName)}.md`;
     if (newPath === path) return path;
     if (docs[newPath]) throw new Error("A note with that name already exists");
     docs[newPath] = docs[path];

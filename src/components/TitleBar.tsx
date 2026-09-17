@@ -1,6 +1,7 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useEffect, useState } from "react";
 import { isTauri } from "../lib/vault";
+import { basename, stripExtension } from "../lib/paths";
 import { useStore } from "../store";
 
 const appWindow = isTauri ? getCurrentWindow() : null;
@@ -22,7 +23,7 @@ export function TitleBar() {
     };
   }, []);
 
-  const folder = vaultPath?.split(/[\\/]/).filter(Boolean).pop();
+  const folder = vaultPath ? basename(vaultPath) : undefined;
 
   return (
     <div className="titlebar" data-tauri-drag-region>
@@ -38,7 +39,7 @@ export function TitleBar() {
       >
         {activePath ? (
           <>
-            <span className="file">{activePath.replace(/\.md$/i, "")}</span>
+            <span className="file">{stripExtension(activePath)}</span>
             {folder && <span className="folder">{folder}</span>}
           </>
         ) : (

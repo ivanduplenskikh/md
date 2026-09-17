@@ -9,7 +9,10 @@ import {
 import { open } from "@tauri-apps/plugin-dialog";
 import { Store } from "@tauri-apps/plugin-store";
 import { invoke } from "@tauri-apps/api/core";
+import { basename, dirname } from "@tauri-apps/api/path";
 import { browserVault } from "./browserVault";
+import { sanitizeName, uniqueNotePath } from "./noteNames";
+import { stripExtension } from "./paths";
 
 const STORE_FILE = "md.json";
 const VAULT_KEY = "vaultPath";
@@ -29,6 +32,7 @@ function store() {
   return storePromise;
 }
 
+/** Vault-relative paths always use "/", which Windows accepts too. */
 export function join(...parts: string[]) {
   return parts.filter(Boolean).join("/").replace(/\/+/g, "/");
 }
@@ -62,11 +66,10 @@ export async function pickNoteFile(): Promise<{ vault: string; path: string } | 
   });
   if (typeof selected !== "string") return null;
 
-  const sep = Math.max(selected.lastIndexOf("/"), selected.lastIndexOf("\\"));
-  const vault = selected.slice(0, sep);
+  const vault = await dirname(selected);
   await invoke("allow_vault", { path: vault });
   await rememberVault(vault);
-  return { vault, path: selected.slice(sep + 1) };
+  return { vault, path: await basename(selected) };
 }
 
 async function rememberVault(path: string) {
@@ -87,7 +90,7 @@ export async function listNotes(vault: string): Promise<Note[]> {
       if (entry.isDirectory) {
         await walk(rel);
       } else if (entry.name.toLowerCase().endsWith(".md")) {
-        notes.push({ path: rel, name: entry.name.replace(/\.md$/i, "") });
+        notes.push({ path: rel, name: stripExtension(entry.name) });
       }
     }
   }
@@ -108,20 +111,15 @@ export function writeNote(vault: string, path: string, content: string) {
 
 export async function createNote(vault: string, name = "Untitled"): Promise<Note> {
   if (!isTauri) return browserVault.createNote(vault, name);
-  let path = `${name}.md`;
-  let n = 1;
-  while (await exists(join(vault, path))) {
-    path = `${name} ${++n}.md`;
-  }
-  await writeTextFile(join(vault, path), `# ${path.replace(/\.md$/, "")}\n\n`);
-  return { path, name: path.replace(/\.md$/, "") };
+  const path = await uniqueNotePath(name, (candidate) => exists(join(vault, candidate)));
+  await writeTextFile(join(vault, path), `# ${stripExtension(path)}\n\n`);
+  return { path, name: stripExtension(path) };
 }
 
 export async function renameNote(vault: string, path: string, newName: string) {
   if (!isTauri) return browserVault.renameNote(vault, path, newName);
   const dir = path.includes("/") ? path.slice(0, path.lastIndexOf("/")) : "";
-  const safe = newName.replace(/[\\/:*?"<>|]/g, "-").trim() || "Untitled";
-  const newPath = dir ? join(dir, `${safe}.md`) : `${safe}.md`;
+  const newPath = join(dir, `${sanitizeName(newName)}.md`);
   if (newPath === path) return path;
   if (await exists(join(vault, newPath))) throw new Error("A note with that name already exists");
   await rename(join(vault, path), join(vault, newPath));

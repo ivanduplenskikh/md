@@ -3,14 +3,15 @@ import { Sidebar } from "./components/Sidebar";
 import { Editor } from "./components/Editor";
 import { Preview } from "./components/Preview";
 import { Wysiwyg } from "./components/Wysiwyg";
-import { QuickOpen } from "./components/QuickOpen";
-import { CommandPalette, type Command } from "./components/CommandPalette";
+import { Palette, type PaletteItem } from "./components/Palette";
 import { Shortcuts } from "./components/Shortcuts";
 import { Tabs } from "./components/Tabs";
 import { TitleBar } from "./components/TitleBar";
 import { StatusBar } from "./components/StatusBar";
 import { EditIcon, PreviewIcon, SidebarIcon, SplitIcon, ZenIcon } from "./components/icons";
 import { useStore } from "./store";
+import { confirmDelete } from "./lib/confirm";
+import { stripExtension } from "./lib/paths";
 import "./App.css";
 
 type ViewMode = "edit" | "split" | "preview" | "zen";
@@ -130,7 +131,7 @@ function App() {
     setCommandOpen,
   ]);
 
-  const commands: Command[] = [
+  const commands: PaletteItem[] = [
     { id: "new", label: "New note", hint: "Ctrl+N", run: () => void newNote() },
     { id: "open", label: "Open file…", hint: "Ctrl+O", run: () => void openFile() },
     { id: "folder", label: "Open folder…", run: () => void chooseVault() },
@@ -139,13 +140,16 @@ function App() {
     {
       id: "rename",
       label: "Rename note…",
-      run: () => setRenaming(activePath?.replace(/\.md$/i, "") ?? ""),
+      run: () => setRenaming(activePath ? stripExtension(activePath) : ""),
     },
     {
       id: "delete",
       label: "Delete note",
       run: () => {
-        if (activePath && confirm(`Delete "${activePath}"?`)) void deleteNote(activePath);
+        if (activePath)
+          void confirmDelete(activePath).then((ok) => {
+            if (ok) void deleteNote(activePath);
+          });
       },
     },
     {
@@ -162,7 +166,7 @@ function App() {
     { id: "shortcuts", label: "Keyboard shortcuts", hint: "Ctrl+/", run: () => setShortcuts(true) },
   ];
 
-  const title = activePath?.replace(/\.md$/i, "") ?? "";
+  const title = activePath ? stripExtension(activePath) : "";
 
   function startSidebarDrag(e: React.PointerEvent) {
     e.preventDefault();
@@ -276,9 +280,25 @@ function App() {
         </div>
       </main>
       <StatusBar />
-      {quickOpen && <QuickOpen onClose={() => setQuickOpen(false)} />}
+      {quickOpen && (
+        <Palette
+          items={notes.map((note) => ({
+            id: note.path,
+            label: stripExtension(note.path),
+            run: () => void openNote(note.path),
+          }))}
+          placeholder="Go to note…"
+          emptyLabel="No matching notes"
+          onClose={() => setQuickOpen(false)}
+        />
+      )}
       {commandOpen && (
-        <CommandPalette commands={commands} onClose={() => setCommandOpen(false)} />
+        <Palette
+          items={commands}
+          placeholder="Type a command…"
+          emptyLabel="No matching commands"
+          onClose={() => setCommandOpen(false)}
+        />
       )}
       {shortcuts && <Shortcuts onClose={() => setShortcuts(false)} />}
     </div>

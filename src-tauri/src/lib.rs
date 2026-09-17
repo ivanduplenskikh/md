@@ -15,6 +15,7 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_store::Builder::default().build())
+        .plugin(tauri_plugin_window_state::Builder::default().build())
         // after fs: re-grants scope for folders the user picked in earlier sessions
         .plugin(tauri_plugin_persisted_scope::init())
         .invoke_handler(tauri::generate_handler![allow_vault])

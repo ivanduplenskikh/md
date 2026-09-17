@@ -1,4 +1,5 @@
 import { useStore } from "../store";
+import { basename, stripExtension } from "../lib/paths";
 
 export function Tabs() {
   const openTabs = useStore((s) => s.openTabs);
@@ -16,7 +17,7 @@ export function Tabs() {
         return (
           <div key={path} className={`tab ${active ? "active" : ""}`}>
             <button role="tab" aria-selected={active} onClick={() => openNote(path)}>
-              {path.replace(/\.md$/i, "").split("/").pop()}
+              {stripExtension(basename(path))}
             </button>
             <button
               className="close"

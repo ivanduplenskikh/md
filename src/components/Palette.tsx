@@ -1,17 +1,21 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
-export type Command = {
+export type PaletteItem = {
   id: string;
   label: string;
   hint?: string;
   run: () => void;
 };
 
-export function CommandPalette({
-  commands,
+export function Palette({
+  items,
+  placeholder,
+  emptyLabel,
   onClose,
 }: {
-  commands: Command[];
+  items: PaletteItem[];
+  placeholder: string;
+  emptyLabel: string;
   onClose: () => void;
 }) {
   const [query, setQuery] = useState("");
@@ -20,8 +24,9 @@ export function CommandPalette({
 
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return q ? commands.filter((c) => c.label.toLowerCase().includes(q)) : commands;
-  }, [commands, query]);
+    const hits = q ? items.filter((item) => item.label.toLowerCase().includes(q)) : items;
+    return hits.slice(0, 100);
+  }, [items, query]);
 
   useEffect(() => setIndex(0), [query]);
 
@@ -39,7 +44,7 @@ export function CommandPalette({
       <div className="palette" onMouseDown={(e) => e.stopPropagation()}>
         <input
           autoFocus
-          placeholder="Type a command…"
+          placeholder={placeholder}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => {
@@ -59,15 +64,15 @@ export function CommandPalette({
           }}
         />
         <ul ref={listRef}>
-          {matches.map((command, i) => (
-            <li key={command.id} className={i === index ? "active" : ""}>
+          {matches.map((item, i) => (
+            <li key={item.id} className={i === index ? "active" : ""}>
               <button onMouseEnter={() => setIndex(i)} onClick={() => choose(i)}>
-                <span>{command.label}</span>
-                {command.hint && <kbd>{command.hint}</kbd>}
+                <span>{item.label}</span>
+                {item.hint && <kbd>{item.hint}</kbd>}
               </button>
             </li>
           ))}
-          {matches.length === 0 && <li className="empty">No matching commands</li>}
+          {matches.length === 0 && <li className="empty">{emptyLabel}</li>}
         </ul>
       </div>
     </div>

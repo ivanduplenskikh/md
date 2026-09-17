@@ -1,8 +1,7 @@
 import { $prose } from "@milkdown/kit/utils";
 import { Plugin, PluginKey } from "@milkdown/kit/prose/state";
 import { Decoration, DecorationSet } from "@milkdown/kit/prose/view";
-
-const MARKER = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\][ \t]*\n?/i;
+import { ALERT_MARKER, alertTitle } from "./alerts";
 
 /** Renders `> [!NOTE]` blockquotes as styled callouts while editing. */
 export const alertPlugin = $prose(
@@ -15,14 +14,14 @@ export const alertPlugin = $prose(
 
           state.doc.descendants((node, pos) => {
             if (node.type.name !== "blockquote") return;
-            const match = MARKER.exec(node.firstChild?.textContent ?? "");
+            const match = ALERT_MARKER.exec(node.firstChild?.textContent ?? "");
             if (!match) return;
 
             const kind = match[1].toLowerCase();
             decorations.push(
               Decoration.node(pos, pos + node.nodeSize, {
                 class: `markdown-alert markdown-alert-${kind}`,
-                "data-alert": kind[0].toUpperCase() + kind.slice(1),
+                "data-alert": alertTitle(kind),
               }),
             );
 

@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useStore } from "../store";
 import { ContextMenu } from "./ContextMenu";
+import { confirmDelete } from "../lib/confirm";
+import { popupNativeMenu } from "../lib/nativeMenu";
+import { basename, stripExtension } from "../lib/paths";
 import { FileIcon, FolderIcon, PlusIcon, TrashIcon } from "./icons";
 
 export function Sidebar() {
@@ -18,7 +21,24 @@ export function Sidebar() {
   const [menu, setMenu] = useState<{ x: number; y: number; path: string } | null>(null);
   const [renamingPath, setRenamingPath] = useState<string | null>(null);
 
-  const folderName = vaultPath?.split(/[\\/]/).filter(Boolean).pop() ?? "No folder opened";
+  function actionsFor(path: string, name: string) {
+    return [
+      { label: "Open", run: () => void openNote(path) },
+      { label: "Rename…", run: () => setRenamingPath(path) },
+      { label: "New note", run: () => void newNote() },
+      {
+        label: "Delete",
+        danger: true,
+        run: () => {
+          void confirmDelete(name).then((ok) => {
+            if (ok) void deleteNote(path);
+          });
+        },
+      },
+    ];
+  }
+
+  const folderName = vaultPath ? basename(vaultPath) : "No folder opened";
 
   return (
     <aside className="sidebar">
@@ -57,9 +77,12 @@ export function Sidebar() {
           <li
             key={note.path}
             className={note.path === activePath ? "active" : ""}
-            onContextMenu={(e) => {
+            onContextMenu={async (e) => {
               e.preventDefault();
-              setMenu({ x: e.clientX, y: e.clientY, path: note.path });
+              const actions = actionsFor(note.path, note.name);
+              if (!(await popupNativeMenu(actions))) {
+                setMenu({ x: e.clientX, y: e.clientY, path: note.path });
+              }
             }}
           >
             {renamingPath === note.path ? (
@@ -80,14 +103,16 @@ export function Sidebar() {
             ) : (
               <>
                 <button className="note-item" onClick={() => openNote(note.path)}>
-                  {note.path.replace(/\.md$/i, "")}
+                  {stripExtension(note.path)}
                 </button>
                 <button
                   className="delete"
                   title="Delete note"
                   aria-label={`Delete ${note.name}`}
                   onClick={() => {
-                    if (confirm(`Delete "${note.name}"?`)) void deleteNote(note.path);
+                    void confirmDelete(note.name).then((ok) => {
+                      if (ok) void deleteNote(note.path);
+                    });
                   }}
                 >
                   <TrashIcon />
@@ -102,18 +127,7 @@ export function Sidebar() {
           x={menu.x}
           y={menu.y}
           onClose={() => setMenu(null)}
-          items={[
-            { label: "Open", run: () => void openNote(menu.path) },
-            { label: "Rename…", run: () => setRenamingPath(menu.path) },
-            { label: "New note", run: () => void newNote() },
-            {
-              label: "Delete",
-              danger: true,
-              run: () => {
-                if (confirm(`Delete "${menu.path}"?`)) void deleteNote(menu.path);
-              },
-            },
-          ]}
+          items={actionsFor(menu.path, stripExtension(basename(menu.path)))}
         />
       )}
     </aside>

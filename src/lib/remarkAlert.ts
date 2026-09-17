@@ -1,3 +1,5 @@
+import { ALERT_MARKER, alertTitle } from "./alerts";
+
 type MdNode = {
   type: string;
   value?: string;
@@ -5,14 +7,11 @@ type MdNode = {
   data?: { hName?: string; hProperties?: Record<string, unknown> };
 };
 
-const TYPES = ["note", "tip", "important", "warning", "caution"] as const;
-const MARKER = new RegExp(`^\\[!(${TYPES.join("|")})\\]\\s*`, "i");
-
 function titleNode(kind: string): MdNode {
   return {
     type: "paragraph",
     data: { hProperties: { className: "markdown-alert-title" } },
-    children: [{ type: "text", value: kind[0].toUpperCase() + kind.slice(1) }],
+    children: [{ type: "text", value: alertTitle(kind) }],
   };
 }
 
@@ -24,7 +23,7 @@ function transform(node: MdNode): void {
   const lead = first?.type === "paragraph" ? first.children?.[0] : undefined;
   if (!lead || lead.type !== "text") return;
 
-  const match = MARKER.exec(lead.value ?? "");
+  const match = ALERT_MARKER.exec(lead.value ?? "");
   if (!match) return;
 
   const kind = match[1].toLowerCase();
