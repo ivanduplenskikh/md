@@ -276,3 +276,49 @@ button:disabled {
 .markdown-body input[type="checkbox"] {
   margin-right: 6px;
 }
+
+/* GitHub-style alerts: > [!NOTE] etc. */
+.markdown-alert {
+  --alert: var(--fg-dim);
+  margin: 1em 0;
+  padding: 8px 14px;
+  border-left: 4px solid var(--alert);
+  border-radius: 0 6px 6px 0;
+  background: color-mix(in srgb, var(--alert) 10%, transparent);
+}
+
+.markdown-alert > :first-child {
+  margin-top: 0;
+}
+
+.markdown-alert > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown-alert-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: var(--alert);
+}
+
+.markdown-alert-note {
+  --alert: #4493f8;
+}
+
+.markdown-alert-tip {
+  --alert: #3fb950;
+}
+
+.markdown-alert-important {
+  --alert: #ab7df8;
+}
+
+.markdown-alert-warning {
+  --alert: #d29922;
+}
+
+.markdown-alert-caution {
+  --alert: #f85149;
+}
