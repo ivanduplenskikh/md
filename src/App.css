@@ -397,6 +397,54 @@ button.icon:hover:not(:disabled) {
   opacity: 1;
 }
 
+.rename-input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 13px;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin: 1px 2px;
+  outline: none;
+}
+
+/* Context menu */
+.context-menu {
+  position: fixed;
+  z-index: 20;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgb(0 0 0 / 30%);
+}
+
+.context-menu button {
+  border: none;
+  border-radius: 5px;
+  text-align: left;
+  font-size: 13px;
+  padding: 5px 10px;
+}
+
+.context-menu button:hover {
+  background: color-mix(in srgb, var(--fg) 10%, transparent);
+}
+
+.context-menu button.danger {
+  color: #f85149;
+}
+
+.context-menu button.danger:hover {
+  background: color-mix(in srgb, #f85149 16%, transparent);
+}
+
 /* Main */
 .main {
   display: flex;

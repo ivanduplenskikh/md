@@ -27,6 +27,7 @@ type State = {
   save: () => Promise<void>;
   newNote: () => Promise<void>;
   renameActive: (name: string) => Promise<void>;
+  renamePath: (path: string, name: string) => Promise<void>;
   deleteNote: (path: string) => Promise<void>;
 };
 
@@ -149,14 +150,19 @@ export const useStore = create<State>((set, get) => {
     },
 
     renameActive: async (name) => {
-      const { vaultPath, activePath } = get();
-      if (!vaultPath || !activePath) return;
+      const { activePath } = get();
+      if (activePath) await get().renamePath(activePath, name);
+    },
+
+    renamePath: async (path, name) => {
+      const { vaultPath } = get();
+      if (!vaultPath) return;
       try {
-        if (get().dirty) await get().save();
-        const newPath = await vault.renameNote(vaultPath, activePath, name);
+        if (get().activePath === path && get().dirty) await get().save();
+        const newPath = await vault.renameNote(vaultPath, path, name);
         set({
-          activePath: newPath,
-          openTabs: get().openTabs.map((p) => (p === activePath ? newPath : p)),
+          activePath: get().activePath === path ? newPath : get().activePath,
+          openTabs: get().openTabs.map((p) => (p === path ? newPath : p)),
         });
         await get().refresh();
       } catch (e) {
