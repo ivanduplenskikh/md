@@ -33,6 +33,7 @@ const options = {
 export function Editor() {
   const content = useStore((s) => s.content);
   const setContent = useStore((s) => s.setContent);
+  const setCursor = useStore((s) => s.setCursor);
   const dark = usePrefersDark();
 
   return (
@@ -42,6 +43,11 @@ export function Editor() {
         theme={dark ? "vs-dark" : "vs"}
         value={content}
         onChange={(value) => setContent(value ?? "")}
+        onMount={(editor) =>
+          editor.onDidChangeCursorPosition((e) =>
+            setCursor({ line: e.position.lineNumber, column: e.position.column }),
+          )
+        }
         options={options}
         height="100%"
       />

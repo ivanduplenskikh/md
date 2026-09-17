@@ -57,9 +57,99 @@ button:disabled {
 
 .app {
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: var(--sidebar-w, 260px) 5px 1fr;
+  grid-template-rows: 1fr auto;
   height: 100%;
   background: var(--bg);
+}
+
+.app.collapsed {
+  grid-template-columns: 1fr;
+}
+
+.resizer {
+  background: transparent;
+  transition: background 120ms;
+}
+
+.resizer.vertical {
+  cursor: col-resize;
+}
+
+.resizer:hover,
+.resizer:active {
+  background: var(--accent);
+}
+
+.statusbar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 3px 12px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-alt);
+  font-size: 12px;
+  color: var(--fg-dim);
+}
+
+.statusbar .spacer {
+  flex: 1;
+}
+
+.statusbar .dirty {
+  color: var(--accent);
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  overflow-x: auto;
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--border);
+  scrollbar-width: thin;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  border-right: 1px solid var(--border);
+  max-width: 200px;
+}
+
+.tab button {
+  border: none;
+  border-radius: 0;
+  font-size: 13px;
+  color: var(--fg-dim);
+  padding: 6px 4px 6px 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tab.active {
+  background: var(--bg);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.tab.active button {
+  color: var(--fg);
+}
+
+.tab .close {
+  padding: 6px 10px 6px 4px;
+  opacity: 0;
+}
+
+.tab:hover .close,
+.tab.active .close {
+  opacity: 1;
+}
+
+.tab .close:hover {
+  background: transparent;
+  color: var(--fg);
 }
 
 /* Sidebar */
@@ -159,8 +249,8 @@ button.icon:hover:not(:disabled) {
 .toolbar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 12px;
+  gap: 10px;
+  padding: 6px 12px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -178,11 +268,6 @@ button.icon:hover:not(:disabled) {
   border: 1px solid var(--accent);
   border-radius: 6px;
   padding: 3px 8px;
-}
-
-.status {
-  font-size: 12px;
-  color: var(--fg-dim);
 }
 
 .modes {
@@ -235,8 +320,15 @@ button.icon:hover:not(:disabled) {
 }
 
 .preview {
-  padding: 16px 24px;
-  line-height: 1.6;
+  padding: 40px 32px 25vh;
+  line-height: 1.7;
+}
+
+/* Typora-style single centered column. */
+.preview > .markdown-body {
+  max-width: 760px;
+  margin: 0 auto;
+  font-size: 16px;
 }
 
 /* Markdown */

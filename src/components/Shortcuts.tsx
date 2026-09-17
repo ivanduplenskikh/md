@@ -4,6 +4,8 @@ const SHORTCUTS: [string, string][] = [
   ["Ctrl + O", "Open a .md file"],
   ["Ctrl + P", "Quick open by name"],
   ["Ctrl + 1…9", "Jump to Nth note"],
+  ["Ctrl + W", "Close tab"],
+  ["Ctrl + B", "Toggle sidebar"],
   ["Ctrl + E", "Cycle edit / split / preview"],
   ["Ctrl + /", "Show this list"],
   ["Esc", "Close"],

@@ -9,8 +9,10 @@ export function Preview() {
   const content = useStore((s) => s.content);
 
   return (
-    <div className="preview markdown-body">
-      <ReactMarkdown remarkPlugins={remarkPlugins}>{content}</ReactMarkdown>
+    <div className="preview">
+      <article className="markdown-body">
+        <ReactMarkdown remarkPlugins={remarkPlugins}>{content}</ReactMarkdown>
+      </article>
     </div>
   );
 }
